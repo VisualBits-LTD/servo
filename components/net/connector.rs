@@ -663,7 +663,8 @@ pub fn create_http_client(tls_config: TlsConfig) -> ServoClient {
         .with_tls_config(tls_config)
         .https_or_http()
         .enable_http1()
-        .enable_http2()
+        // YouTube intermittently resets the first HTTP/2 stream with PROTOCOL_ERROR.
+        // Keep Servo on HTTP/1.1 until servo/servo#49396 is fixed upstream.
         .wrap_connector(ProxyConnector::new());
 
     Client::builder(TokioExecutor {})
